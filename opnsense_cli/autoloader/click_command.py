@@ -54,7 +54,11 @@ class ClickCommandAutoloader:
                     import_name = f"{module_name}.{command_group_dir}.{_subname_}"
                     class_name = f"{_subname_}"
 
+                    # XXX
+                    print(f"DEBUG: {module_name} | {command_group_dir} | {_subname_}")
                 module = importlib.import_module(import_name)
+                # XXX
+                print(f"DEBUG2: {module} | {class_name}")
                 click_group = getattr(module, class_name)
 
                 self.loaded_modules.add(module)

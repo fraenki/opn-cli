@@ -1,5 +1,5 @@
 from unittest.mock import patch
-from opnsense_cli.commands.core.openvpn import openvpn
+from opnsense_cli.commands.plugin.apibackup import apibackup
 from opnsense_cli.tests.commands.base import CommandTestCase
 
 class TestApibackupCommands(CommandTestCase):
@@ -20,7 +20,7 @@ class TestApibackupCommands(CommandTestCase):
             60
         ]
 
-    @patch('opnsense_cli.commands.core.apibackup.ApiClient.execute')
+    @patch('opnsense_cli.commands.plugin.apibackup.ApiClient.execute')
     def test_download(self, api_response_mock):
         result = self._opn_cli_command_result(
             api_response_mock,
