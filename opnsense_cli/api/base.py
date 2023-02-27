@@ -27,9 +27,7 @@ class ApiBase():
 
     def _api_call(api_function):
         def api_response(self, *args, json=None):
-            #print("DEBUG 99")
             api_function(self)
-            #print("DEBUG 99 B")
             return self._api_client.execute(
                 *args,
                 module=self.module, controller=self.controller, method=self.method, command=self.command,
