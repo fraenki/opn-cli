@@ -2,7 +2,7 @@ from opnsense_cli.api.base import ApiBase
 
 
 class Apibackup(ApiBase):
-    MODULE = "apibackup"
+    MODULE = "backup"
     CONTROLLER = "backup"
     """
     api-backup BackupController

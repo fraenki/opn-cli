@@ -1,5 +1,8 @@
+import base64
+import re
 import requests
 import json
+from json import JSONDecodeError
 from urllib3.exceptions import InsecureRequestWarning
 from opnsense_cli.exceptions.api import APIException
 
@@ -26,7 +29,35 @@ class ApiClient(object):
 
     def _process_response(self, response):
         if response.status_code in HTTP_SUCCESS:
-            return json.loads(response.text)
+            #print("DEBUG 2000")
+            #print(f"XXX {response.text}")
+            #print(f"XXX {response.headers['content-type']}")
+            print(f"XXX {response.headers}")
+            try:
+                return json.loads(response.text)
+            except JSONDecodeError:
+                print("DEBUG 2200")
+                # Convert response to base64.
+                response_bytes = response.text.encode("utf-8")
+                content = base64.b64encode(response_bytes)
+                print("DEBUG 2210")
+                # Not a JSON response, wrap the content into base64.
+                if 'Content-Disposition' in response.headers.keys():
+                    print("DEBUG 2220")
+                    # Looks like a file.
+                    filename = re.findall('filename=(.+)', response.headers['Content-Disposition'])[0]
+                    print(f"DEBUG filename: {filename}")
+                    # Create a json string.
+                    response_json = f"'{{\"filename\": \"{filename}\", \"content\": \"{content}\", \"encoding\": \"base64\"}}'"
+                else:
+                    print("DEBUG 2230")
+                    # Create a json string.
+                    response_json = f"'{{\"content\": \"{content}\", \"encoding\": \"base64\"}}'"
+                print("DEBUG 2300")
+                #print(f"YYY {response_json}")
+                #return response.text
+                #return json.loads(response.text)
+                return json.loads(response_json)
         else:
             raise APIException(response=response.status_code, resp_body=response.text, url=response.url)
 
@@ -39,9 +70,11 @@ class ApiClient(object):
 
     def _get(self, endpoint):
         req_url = '{}/{}'.format(self._base_url, endpoint)
+        #print("DEBUG 1000")
         response = requests.get(req_url, verify=self.ssl_verify_cert,
                                 auth=(self._api_key, self._api_secret),
                                 timeout=self._timeout)
+        #print("DEBUG 1000 B")
         return self._process_response(response)
 
     def _post(self, endpoint, json=None):
