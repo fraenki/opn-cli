@@ -32,28 +32,28 @@ class ApiClient(object):
             #print("DEBUG 2000")
             #print(f"XXX {response.text}")
             #print(f"XXX {response.headers['content-type']}")
-            print(f"XXX {response.headers}")
+            #print(f"XXX {response.headers}")
             try:
                 return json.loads(response.text)
             except JSONDecodeError:
-                print("DEBUG 2200")
+                #print("DEBUG 2200")
                 # Convert response to base64.
                 response_bytes = response.text.encode("utf-8")
                 content = base64.b64encode(response_bytes)
-                print("DEBUG 2210")
+                #print("DEBUG 2210")
                 # Not a JSON response, wrap the content into base64.
                 if 'Content-Disposition' in response.headers.keys():
-                    print("DEBUG 2220")
+                    #print("DEBUG 2220")
                     # Looks like a file.
                     filename = re.findall('filename=(.+)', response.headers['Content-Disposition'])[0]
-                    print(f"DEBUG filename: {filename}")
+                    #print(f"DEBUG filename: {filename}")
                     # Create a json string.
                     response_json = f"'{{\"filename\": \"{filename}\", \"content\": \"{content}\", \"encoding\": \"base64\"}}'"
                 else:
-                    print("DEBUG 2230")
+                    #print("DEBUG 2230")
                     # Create a json string.
                     response_json = f"'{{\"content\": \"{content}\", \"encoding\": \"base64\"}}'"
-                print("DEBUG 2300")
+                #print("DEBUG 2300")
                 #print(f"YYY {response_json}")
                 #return response.text
                 #return json.loads(response.text)

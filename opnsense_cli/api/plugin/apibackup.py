@@ -1,7 +1,8 @@
 from opnsense_cli.api.base import ApiBase
 
 
-class Apibackup(ApiBase):
+#class Apibackup(ApiBase):
+class Backup(ApiBase):
     MODULE = "backup"
     CONTROLLER = "backup"
     """
@@ -9,6 +10,7 @@ class Apibackup(ApiBase):
     """
 
     @ApiBase._api_call
-    def download(self, *args, json=None):
+    #def download(self, *args, json=None):
+    def download(self, *args):
         self.method = "get"
         self.command = "download"
